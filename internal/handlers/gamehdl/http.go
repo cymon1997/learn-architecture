@@ -1,9 +1,7 @@
 package gamehdl
 
 import (
-	"strconv"
-
-	"github.com/cymon1997/go-architecture/internal/core/ports"
+	"github.com/cymon1997/learn-architecture/internal/core/ports"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,17 +21,28 @@ func (hdl *HTTPHandler) Get(c *gin.Context) {
 		c.AbortWithStatusJSON(500, gin.H{"message": err.Error()})
 		return
 	}
+
 	c.JSON(200, game)
 }
 
 func (hdl *HTTPHandler) Create(c *gin.Context) {
-	name := c.Param("name")
-	size, _ := strconv.ParseInt(c.Param("size"), 10, 64)
-	bombs, _ := strconv.ParseInt(c.Param("bombs"), 10, 64)
-	game, err := hdl.gamesService.Create(name, uint(size), uint(bombs))
+	body := BodyCreate{}
+	c.BindJSON(&body)
+	game, err := hdl.gamesService.Create(body.Name, body.Size, body.Bombs)
 	if err != nil {
 		c.AbortWithStatusJSON(500, gin.H{"message": err.Error()})
 		return
 	}
-	c.JSON(200, game)
+	c.JSON(200, BuildResponseCreate(game))
+}
+
+func (hdl *HTTPHandler) RevealCell(c *gin.Context) {
+	body := BodyRevealCell{}
+	c.BindJSON(&body)
+	game, err := hdl.gamesService.Reveal(c.Param("id"), body.Row, body.Col)
+	if err != nil {
+		c.AbortWithStatusJSON(500, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(200, BuildResponseRevealCell(game))
 }

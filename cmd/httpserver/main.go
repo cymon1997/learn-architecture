@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/cymon1997/go-architecture/internal/core/services/gamesrv"
-	"github.com/cymon1997/go-architecture/internal/handlers/gamehdl"
-	"github.com/cymon1997/go-architecture/internal/repositories/gamesrepo"
+	"github.com/cymon1997/learn-architecture/internal/core/services/gamesrv"
+	"github.com/cymon1997/learn-architecture/internal/handlers/gamehdl"
+	"github.com/cymon1997/learn-architecture/internal/repositories/gamesrepo"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +15,7 @@ func main() {
 	router := gin.New()
 	router.GET("/games/:id", gamesHandler.Get)
 	router.POST("/games", gamesHandler.Create)
+	router.PUT("/games/:id", gamesHandler.RevealCell)
 
-	_ = router.Run(":8080")
+	router.Run(":8080")
 }

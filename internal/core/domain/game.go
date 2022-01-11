@@ -1,5 +1,11 @@
 package domain
 
+const (
+	GAME_STATE_WON  = "won"
+	GAME_STATE_LOST = "lost"
+	GAME_STATE_NEW  = "new"
+)
+
 type Game struct {
 	ID            string        `json:"id"`
 	Name          string        `json:"name"`
@@ -8,16 +14,18 @@ type Game struct {
 	Board         Board         `json:"board"`
 }
 
-func NewGame(name string, size, bombs uint) Game {
-	// TODO: Implement initial game setup
+func NewGame(id string, name string, size uint, bombs uint) Game {
 	return Game{
-		ID:    "",
+		ID:    id,
 		Name:  name,
-		State: "",
+		State: GAME_STATE_NEW,
 		BoardSettings: BoardSettings{
 			Size:  size,
 			Bombs: bombs,
 		},
-		Board: nil,
+		Board: NewBoard(size, bombs),
 	}
+}
+func (game *Game) IsOver() bool {
+	return game.State == GAME_STATE_LOST || game.State == GAME_STATE_WON
 }

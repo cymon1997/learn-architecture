@@ -4,16 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/cymon1997/go-architecture/internal/core/ports"
-
-	"github.com/cymon1997/go-architecture/internal/core/domain"
+	"github.com/cymon1997/learn-architecture/internal/core/domain"
 )
 
 type memkvs struct {
 	kvs map[string][]byte
 }
 
-func NewMemKVS() ports.GamesRepository {
+func NewMemKVS() *memkvs {
 	return &memkvs{kvs: map[string][]byte{}}
 }
 
@@ -29,7 +27,11 @@ func (repo *memkvs) Get(id string) (domain.Game, error) {
 	return domain.Game{}, errors.New("game not found in kvs")
 }
 
-func (repo *memkvs) Save(domain.Game) error {
-	// TODO: Implement save
+func (repo *memkvs) Save(game domain.Game) error {
+	bytes, err := json.Marshal(game)
+	if err != nil {
+		return errors.New("game fails at marshal into json string")
+	}
+	repo.kvs[game.ID] = bytes
 	return nil
 }
